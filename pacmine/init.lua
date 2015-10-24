@@ -79,7 +79,7 @@ minetest.register_node("pacmine:pellet_2", {
 
 --The placer block
 minetest.register_node("pacmine:block2",{
-	description = "Pacman",
+	description = "Pacmine",
 	inventory_image = "pacmine_1.png",
 	tiles = {
 		"pacmine_wallc.png",
