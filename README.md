@@ -23,3 +23,5 @@ If your score makes it into the highscore of the server your name will be regist
 
 * [DonBatman](https://github.com/DonBatman/)
 * [Ferk](https://github.com/Ferk/)
+
+The myarcade privilege is required to place any of these games in your worlds, by default this is granted to singleplayer, to change that setting please modify mario/init.lua and change give_to_single_player = true to false.
