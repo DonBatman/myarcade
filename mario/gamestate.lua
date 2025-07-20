@@ -62,7 +62,7 @@ function mario.game_start(pos, player, gamedef)
 	minetest.place_schematic({x=pos.x-1,y=pos.y-2,z=pos.z-2},gamedef.schematic,0, "air", true)
 
 	-- initialize player
-	player:set_physics_override(1,1,0.3,true,false)
+	player:set_physics_override({1,1,0.3,true,false})
 
 	-- Set start positions
 	mario.game_reset(id, player)
