@@ -76,6 +76,7 @@ for i in ipairs(ghosts) do
 			end
 
 			local s = self.object:getpos() -- ghost
+                        if not s then return end -- ghost object has despawned
 			local p = player:getpos() -- player
 
 			 -- find distance from ghost to player
@@ -90,7 +91,7 @@ for i in ipairs(ghosts) do
 					-- set the timer negative so it'll have to wait extra time
 					self.timer = -ghosts_death_delay
 					-- play sound and reward player
-					minetest.sound_play("pacmine_eatghost", {pos = boardcenter,max_hear_distance = 6, object=player, loop=false})
+					minetest.sound_play("pacmine_eatghost", {pos = gamestate.center,max_hear_distance = 6, object=player, loop=false})
 					gamestate.score = gamestate.score + 200
 					pacmine.update_hud(gamestate.id, player)
 					minetest.chat_send_player(gamestate.player_name,"You ate a ghost!")
@@ -100,7 +101,7 @@ for i in ipairs(ghosts) do
 					if gamestate.lives < 1 then
 						minetest.chat_send_player(gamestate.player_name,"Game Over")
 						pacmine.game_end(self.gameid)
-						minetest.sound_play("pacmine_death", {pos = boardcenter,max_hear_distance = 20, object=player, loop=false})
+						minetest.sound_play("pacmine_death", {pos = gamestate.center,max_hear_distance = 20, object=player, loop=false})
 
 					elseif gamestate.lives == 1 then
 						minetest.chat_send_player(gamestate.player_name,"This is your last life")

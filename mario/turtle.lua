@@ -73,12 +73,15 @@ for i in ipairs(turtles) do
 			local player = self.target
 
 			-- find distance to the player
-			local dist = vector.distance(self.object:getpos(), player:getpos())
+                        local spos = self.object:getpos()
+                        if not spos then return end
+			local dist = vector.distance(spos, player:getpos())
 			if dist < 1 then
 				mario.on_player_death(self.gameid, player)
 			end
 
-			local velocity = self.object:getvelocity()
+			local velocity = self.object:get_velocity()
+                        if not velocity then return end
 
 			-- if our velocity is close to zero, we are in collision
 			if math.abs(velocity.x) < 0.25 then

@@ -62,7 +62,8 @@ function mario.game_start(pos, player, gamedef)
 	minetest.place_schematic({x=pos.x-1,y=pos.y-2,z=pos.z-2},gamedef.schematic,0, "air", true)
 
 	-- initialize player
-	player:set_physics_override({1,1,0.3,true,false})
+	player:set_physics_override({ speed = 1, jump = 1, gravity = 0.3,
+                                      sneak = true, sneak_glitch = false })
 
 	-- Set start positions
 	mario.game_reset(id, player)
@@ -93,7 +94,8 @@ function mario.game_end(id)
 		minetest.log("action", gamestate.player_name .. " ended mario game with ".. (gamestate.score or "no") .." score at " .. minetest.pos_to_string(gamestate.pos))
 	end
 	-- Restore normal physics
-	player:set_physics_override(1,1,1,true,false)
+	player:set_physics_override({ speed = 1, jump = 1, gravity = 1,
+                                      sneak = true, sneak_glitch = false })
 	-- Clear the data
 	mario.games[id] = nil
 	mario.players[id] = nil

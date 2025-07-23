@@ -36,6 +36,7 @@ function pacmine.game_start(pos, player, gamedef)
 		player_start = vector.add(pos, (gamedef.player_start or {x=14,y=0.5,z=16})),
 		ghost_start = vector.add(pos, (gamedef.ghost_start or {x=13,y=0.5,z=19})),
 		ghost_amount = gamedef.ghost_amount or 4,
+                center = vector.add(pos, {x=13,y=0.5,z=15}),
 		pellet_total =  gamedef.pellet_total or 252,
 		speed = gamedef.speed or 2,
 		lives = gamedef.lives or 3,
@@ -46,7 +47,7 @@ function pacmine.game_start(pos, player, gamedef)
 		awarded_lives = 0,
 		pellet_count = 0,
 	}
- 	pacmine.games[id] = gamestate
+	pacmine.games[id] = gamestate
 	pacmine.players[id] = player
 
 	-- store previous priviledges, disable fly whilöe the game is running
@@ -148,8 +149,7 @@ function pacmine.remove_ghosts(id)
 	if not gamestate then return end
 
 	-- Remove all non-players (ghosts!)
-	local boardcenter = vector.add(gamestate.pos, {x=13,y=0.5,z=15})
-	for index, object in ipairs(minetest.get_objects_inside_radius(boardcenter,20)) do
+	for index, object in ipairs(minetest.get_objects_inside_radius(gamestate.center,20)) do
 		if object:is_player() ~= true then
 		object:remove()
 		end
@@ -201,11 +201,13 @@ function pacmine.on_player_got_pellet(player)
 		minetest.after(3.0, function()
 			minetest.chat_send_player(name, "Starting Level "..gamestate.level)
 			-- place schematic
-			minetest.place_schematic(vector.add(gamestate.pos, {x=0,y=-1,z=-2}),gamestate.schematic,0, "air", true)
+			minetest.place_schematic(vector.add(gamestate.pos, {x=0,y=-1,z=-2}),
+                                                 gamestate.schematic,0, "air", true)
 
 			-- Set start positions
 			pacmine.game_reset(gamestate.id, player)
-			minetest.sound_play("pacmine_beginning", {pos = pos,max_hear_distance = 20,gain = 10.0,})
+			minetest.sound_play("pacmine_beginning", {pos = gamestate.center,
+                                                                  max_hear_distance = 20,gain = 10.0,})
 		end)
 	end
 
@@ -227,8 +229,8 @@ function pacmine.on_player_got_power_pellet(player)
 	gamestate.score = gamestate.score + 50
 	pacmine.update_hud(gamestate.id, player)
 
-	local boardcenter = vector.add(gamestate.pos, {x=13,y=0.5,z=15})
-	local powersound = minetest.sound_play("pacmine_powerup", {pos = boardcenter,max_hear_distance = 20, object=player, loop=true})
+	local powersound = minetest.sound_play("pacmine_powerup", {pos = gamestate.center,max_hear_distance = 20,
+                                                                   object=player, loop=true})
 
 	minetest.after(power_pellet_duration, function()
 		minetest.sound_stop(powersound)
@@ -246,7 +248,7 @@ function pacmine.on_player_got_fruit(player, points)
 	if not gamestate then return end
 	gamestate.score = gamestate.score + points
 	minetest.chat_send_player(name, points .. " bonus points!")
-	minetest.sound_play("pacmine_eatfruit", {pos = pos, max_hear_distance = 6})
+	minetest.sound_play("pacmine_eatfruit", {pos = gamestate.center, max_hear_distance = 6})
 end
 
 -- Get the game that the given player is playing
