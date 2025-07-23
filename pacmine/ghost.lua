@@ -76,6 +76,7 @@ for i in ipairs(ghosts) do
 			end
 
 			local s = self.object:getpos() -- ghost
+                        if not s then return end -- ghost object has despawned
 			local p = player:getpos() -- player
 
 			 -- find distance from ghost to player
