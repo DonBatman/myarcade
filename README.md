@@ -1,7 +1,6 @@
 # myArcade
 
-This is a modpack for the [Minetest engine](http://www.minetest.net/).
-For installation instructions you can follow [this guide](http://dev.minetest.net/Installing_Mods).
+This is a modpack for the Luanti engine.
 
 This modpack includes several mods that add arcade game boards to Minetest.
 If your score makes it into the highscore of the server your name will be registered in the highscore arcade machine for the game you were playing.
@@ -22,6 +21,6 @@ If your score makes it into the highscore of the server your name will be regist
 ### Authors
 
 * [DonBatman](https://github.com/DonBatman/)
-* [Ferk](https://github.com/Ferk/)
+* Ferk
 
 The myarcade privilege is required to place any of these games in your worlds, by default this is granted to singleplayer, to change that setting please modify mario/init.lua and change give_to_single_player = true to false.
