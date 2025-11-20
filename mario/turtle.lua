@@ -29,7 +29,7 @@ for i in ipairs(turtles) do
 
 		collisionbox = {-0.25, -0.25, -0.25, 0.25, 0.25, 0.25},
 		is_visible = true,
-		automatic_rotate = true,
+		automatic_rotate = 1,
 		automatic_face_movement_dir = -90, -- set yaw direction in degrees, false to disable
 		makes_footstep_sound = false,
 		direction = {x=1, y=0, z=0},
