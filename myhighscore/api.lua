@@ -12,7 +12,7 @@ local stored_scores = 50
 
 -- Name of the folder to save the scores to
 -- each game highscore list will be saved in a file inside this directory
-local score_directory = minetest.get_worldpath().."/myhighscores/"
+local score_directory = core.get_worldpath().."/myhighscores/"
 
 -- You can register a new arcade game using this function
 -- The definition will get added to the table of registered games.
@@ -53,7 +53,7 @@ function myhighscore.save_score(name, score)
 	end
 	-- save it to disk
 	local f, err = io.open(score_directory .. name, "w")
-	f:write(minetest.serialize(scores))
+	f:write(core.serialize(scores))
 	f:close()
 	-- return the position we hold on the list
 	return pos
@@ -65,11 +65,11 @@ function myhighscore.load_scores(name)
 	local f, err = io.open(score_directory .. name, "r")
 	local data = {}
 	if f then
-		data = minetest.deserialize(f:read("*a")) or {}
+		data = core.deserialize(f:read("*a")) or {}
 		f:close()
 	end
 	myhighscore.scores[name] = data
 end
 
 -- Create the scores directory if it doesn't exist!
-minetest.mkdir(score_directory)
+core.mkdir(score_directory)

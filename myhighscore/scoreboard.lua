@@ -19,11 +19,11 @@ local function show_formspec_for_game(playername, gamename)
 	-- Obtain a comma separated list of scores to display
 	local scorelist = ""
 	for _,score in pairs(scores) do
-		scorelist = scorelist .."       ".. minetest.formspec_escape(score.player) ..
+		scorelist = scorelist .."       ".. core.formspec_escape(score.player) ..
 			"\t\t\t\t " .."           ".. score.score ..","
 	end
 
-	minetest.show_formspec(playername, "myhighscores:score_" .. gamename, "size[6,8;]"..
+	core.show_formspec(playername, "myhighscores:score_" .. gamename, "size[6,8;]"..
 		"background[0,0;6,8;myhighscore_form_bg.png]"..
 		"label[1,0.5;HIGH SCORES FOR "..def.description.."]"..
 		"label[1.25,1.5;PLAYER]"..
@@ -33,7 +33,7 @@ local function show_formspec_for_game(playername, gamename)
 end
 
 
-minetest.register_node("myhighscore:score_board", {
+core.register_node("myhighscore:score_board", {
 	description = "Score Board",
 	tiles = {
 			"myhighscore_top.png",
@@ -59,12 +59,12 @@ minetest.register_node("myhighscore:score_board", {
 		}
 	},
 	on_construct = function(pos)
-		local meta = minetest.env:get_meta(pos)
+		local meta = core.env:get_meta(pos)
 		meta:set_string("infotext", "High Scores")
 
 		local textlist = ""
 		for game,def in pairs(myhighscore.registered_games) do
-			textlist = textlist .." ".. minetest.formspec_escape(def.description) .. ","
+			textlist = textlist .." ".. core.formspec_escape(def.description) .. ","
 		end
 
 		meta:set_string("formspec", "size[6,8;]"..
@@ -76,10 +76,10 @@ minetest.register_node("myhighscore:score_board", {
 
 	end,
 	on_receive_fields = function(pos, formname, fields, sender)
-		local meta = minetest.env:get_meta(pos)
+		local meta = core.env:get_meta(pos)
 		local playername = sender:get_player_name()
 		if fields.gameid then
-			local event = minetest.explode_textlist_event(fields.gameid)
+			local event = core.explode_textlist_event(fields.gameid)
 			-- find which game it is
 			local i, game = 0, nil
 			repeat
