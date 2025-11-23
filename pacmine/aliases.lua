@@ -7,5 +7,5 @@ local nodes = {
 }
 
 for _,itm in pairs(nodes) do
-	minetest.register_alias("mypacman:"..itm, "pacmine:"..itm)
+	core.register_alias("mypacman:"..itm, "pacmine:"..itm)
 end

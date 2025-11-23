@@ -17,13 +17,13 @@ local score_for_life_award = 5000
 -- Start the game from the spawn block at position "pos" activated by "player"
 function pacmine.game_start(pos, player, gamedef)
 	-- create an id unique for the given position
-	local id = minetest.pos_to_string(pos)
+	local id = core.pos_to_string(pos)
 	local player_name = player:get_player_name()
 
 	-- make sure any previous game with the same id has ended
 	local gamestate = pacmine.games[id]
 	if gamestate then
-		minetest.chat_send_player(player_name, "A game is already in progress for player " .. gamestate.player_name)
+		core.chat_send_player(player_name, "A game is already in progress for player " .. gamestate.player_name)
 		return
 	end
 
@@ -51,35 +51,35 @@ function pacmine.game_start(pos, player, gamedef)
 	pacmine.players[id] = player
 
 	-- store previous priviledges, disable fly whilöe the game is running
-	gamestate.player_privs = minetest.get_player_privs(player_name)
+	gamestate.player_privs = core.get_player_privs(player_name)
 	local new_privs = table.copy(gamestate.player_privs)
 	new_privs.fly = nil
 	new_privs.noclip = nil
 	new_privs.fast = nil
-	minetest.set_player_privs(player_name, new_privs)
+	core.set_player_privs(player_name, new_privs)
 
-	minetest.log("action","New pacmine game started at " .. id .. " by " .. gamestate.player_name)
+	core.log("action","New pacmine game started at " .. id .. " by " .. gamestate.player_name)
 
 	-- place schematic
-	minetest.place_schematic({x=pos.x,y=pos.y-1,z=pos.z-2},gamedef.schematic,0, "air", true)
+	core.place_schematic({x=pos.x,y=pos.y-1,z=pos.z-2},gamedef.schematic,0, "air", true)
 
 	-- Set start positions
 	pacmine.game_reset(id, player)
 	pacmine.update_hud(id, player)
-	minetest.sound_play("pacmine_beginning", {pos = pos,max_hear_distance = 20,gain = 10.0,})
+	core.sound_play("pacmine_beginning", {pos = pos,max_hear_distance = 20,gain = 10.0,})
 end
 
 -- Finish the game with the given id
 function pacmine.game_end(id)
 	pacmine.remove_ghosts(id)
 	local gamestate = pacmine.games[id]
-	local player = pacmine.players[id] or minetest.get_player_by_name(gamestate.player_name)
+	local player = pacmine.players[id] or core.get_player_by_name(gamestate.player_name)
 	if player then
 		pacmine.remove_hud(player, gamestate.player_name)
-		player:moveto(vector.add(gamestate.pos,{x=0.5,y=0.5,z=-1.5}))
+		player:move_to(vector.add(gamestate.pos,{x=0.5,y=0.5,z=-1.5}))
 	end
 	-- Restore player priviledges
-	minetest.set_player_privs(gamestate.player_name, gamestate.player_privs)
+	core.set_player_privs(gamestate.player_name, gamestate.player_privs)
 	-- Save score
 	if gamestate.scorename then
 		local ranking = myhighscore.save_score(gamestate.scorename, {
@@ -87,7 +87,7 @@ function pacmine.game_end(id)
 			score = gamestate.score
 		})
 		if ranking then
-			minetest.chat_send_player(gamestate.player_name, "You made it to the highscores! Your Ranking: " .. ranking)
+			core.chat_send_player(gamestate.player_name, "You made it to the highscores! Your Ranking: " .. ranking)
 		end
 	end
 	-- Clear the data
@@ -98,7 +98,7 @@ end
 -- Resets the game to the start positions
 function pacmine.game_reset(id, player)
 	local gamestate = pacmine.games[id]
-	minetest.log("action", "resetting game " .. id)
+	core.log("action", "resetting game " .. id)
 
 	-- Save the time when the game was last resetted (to solve timing issues)
 	local last_reset = os.time()
@@ -107,36 +107,36 @@ function pacmine.game_reset(id, player)
 	gamestate.last_reset = last_reset
 
 	-- Position the player
-	local player = player or minetest.get_player_by_name(gamestate.player_name)
-	player:setpos(gamestate.player_start)
+	local player = player or core.get_player_by_name(gamestate.player_name)
+	player:set_pos(gamestate.player_start)
 
 	-- Spawn the ghosts and assign the game id to each ghost
-	minetest.after(2, function()
+	core.after(2, function()
 		if pacmine.games[id] and last_reset == pacmine.games[id].last_reset then
-			local ghost = minetest.add_entity(gamestate.ghost_start, "pacmine:inky")
+			local ghost = core.add_entity(gamestate.ghost_start, "pacmine:inky")
 			ghost:get_luaentity().gameid = id
 		end
 	end)
 	if gamestate.ghost_amount >= 2 then
-		minetest.after(12, function()
+		core.after(12, function()
 			if pacmine.games[id] and last_reset == pacmine.games[id].last_reset then
-				local ghost = minetest.add_entity(gamestate.ghost_start, "pacmine:pinky")
+				local ghost = core.add_entity(gamestate.ghost_start, "pacmine:pinky")
 				ghost:get_luaentity().gameid = id
 			end
 		end)
 	end
 	if gamestate.ghost_amount >= 3 then
-		minetest.after(22, function()
+		core.after(22, function()
 			if pacmine.games[id] and last_reset == pacmine.games[id].last_reset then
-				local ghost = minetest.add_entity(gamestate.ghost_start, "pacmine:blinky")
+				local ghost = core.add_entity(gamestate.ghost_start, "pacmine:blinky")
 				ghost:get_luaentity().gameid = id
 			end
 		end)
 	end
 	if gamestate.ghost_amount >= 4 then
-		minetest.after(32, function()
+		core.after(32, function()
 			if pacmine.games[id] and last_reset == pacmine.games[id].last_reset then
-				local ghost = minetest.add_entity(gamestate.ghost_start, "pacmine:clyde")
+				local ghost = core.add_entity(gamestate.ghost_start, "pacmine:clyde")
 				ghost:get_luaentity().gameid = id
 			end
 		end)
@@ -149,7 +149,7 @@ function pacmine.remove_ghosts(id)
 	if not gamestate then return end
 
 	-- Remove all non-players (ghosts!)
-	for index, object in ipairs(minetest.get_objects_inside_radius(gamestate.center,20)) do
+	for index, object in ipairs(core.get_objects_inside_radius(gamestate.center,20)) do
 		if object:is_player() ~= true then
 		object:remove()
 		end
@@ -172,9 +172,9 @@ function pacmine.add_fruit(id)
 		node.name = "pacmine:apple"
 	end
 	local pos = vector.add(gamestate.player_start,{x=0,y=-1,z=0})
-	minetest.set_node(pos, node)
+	core.set_node(pos, node)
 	-- Set the timer for the fruit to disappear
-	minetest.get_node_timer(pos):start(math.random(20, 30))
+	core.get_node_timer(pos):start(math.random(20, 30))
 end
 
 -- A player got a pellet, update the state
@@ -186,33 +186,33 @@ function pacmine.on_player_got_pellet(player)
 	gamestate.pellet_count = gamestate.pellet_count + 1
 	gamestate.score = gamestate.score + 10
 	pacmine.update_hud(gamestate.id, player)
-	minetest.sound_play("pacmine_chomp", {object = player, max_hear_distance = 6})
+	core.sound_play("pacmine_chomp", {object = player, max_hear_distance = 6})
 
 	if gamestate.pellet_count == 70 or gamestate.pellet_count == 180 then
 		pacmine.add_fruit(gamestate.id)
 	elseif gamestate.pellet_count >= gamestate.pellet_total then
-		minetest.chat_send_player(name, "You cleared the board!")
+		core.chat_send_player(name, "You cleared the board!")
 
 		pacmine.remove_ghosts(gamestate.id)
 		gamestate.pellet_count = 0
 		gamestate.level = gamestate.level + 1
 		gamestate.speed = gamestate.level + 1
 
-		minetest.after(3.0, function()
-			minetest.chat_send_player(name, "Starting Level "..gamestate.level)
+		core.after(3.0, function()
+			core.chat_send_player(name, "Starting Level "..gamestate.level)
 			-- place schematic
-			minetest.place_schematic(vector.add(gamestate.pos, {x=0,y=-1,z=-2}),
+			core.place_schematic(vector.add(gamestate.pos, {x=0,y=-1,z=-2}),
                                                  gamestate.schematic,0, "air", true)
 
 			-- Set start positions
 			pacmine.game_reset(gamestate.id, player)
-			minetest.sound_play("pacmine_beginning", {pos = gamestate.center,
+			core.sound_play("pacmine_beginning", {pos = gamestate.center,
                                                                   max_hear_distance = 20,gain = 10.0,})
 		end)
 	end
 
 	if gamestate.score / score_for_life_award >= 1 + gamestate.awarded_lives then
-		minetest.chat_send_player(name, "You reached " .. gamestate.score .. " points and earned an extra life!")
+		core.chat_send_player(name, "You reached " .. gamestate.score .. " points and earned an extra life!")
 		gamestate.lives = gamestate.lives + 1
 		gamestate.awarded_lives = gamestate.awarded_lives + 1
 	end
@@ -224,19 +224,19 @@ function pacmine.on_player_got_power_pellet(player)
 	local gamestate = pacmine.get_game_by_player(name)
 	if not gamestate then return end
 
-	minetest.chat_send_player(name, "You got a POWER PELLET")
+	core.chat_send_player(name, "You got a POWER PELLET")
 	gamestate.power_pellet = os.time() + power_pellet_duration
 	gamestate.score = gamestate.score + 50
 	pacmine.update_hud(gamestate.id, player)
 
-	local powersound = minetest.sound_play("pacmine_powerup", {pos = gamestate.center,max_hear_distance = 20,
+	local powersound = core.sound_play("pacmine_powerup", {pos = gamestate.center,max_hear_distance = 20,
                                                                    object=player, loop=true})
 
-	minetest.after(power_pellet_duration, function()
-		minetest.sound_stop(powersound)
+	core.after(power_pellet_duration, function()
+		core.sound_stop(powersound)
 		if os.time() >= (gamestate.power_pellet or 0) then
 			gamestate.power_pellet = false
-			minetest.chat_send_player(name, "POWER PELLET wore off")
+			core.chat_send_player(name, "POWER PELLET wore off")
 		end
 	end)
 end
@@ -247,8 +247,8 @@ function pacmine.on_player_got_fruit(player, points)
 	local gamestate = pacmine.get_game_by_player(name)
 	if not gamestate then return end
 	gamestate.score = gamestate.score + points
-	minetest.chat_send_player(name, points .. " bonus points!")
-	minetest.sound_play("pacmine_eatfruit", {pos = gamestate.center, max_hear_distance = 6})
+	core.chat_send_player(name, points .. " bonus points!")
+	core.sound_play("pacmine_eatfruit", {pos = gamestate.center, max_hear_distance = 6})
 end
 
 -- Get the game that the given player is playing
@@ -266,15 +266,15 @@ end
 
 -- Called every 0.5 seconds for each player that is currently playing
 local function on_player_gamestep(player, gameid)
-	local player_pos = player:getpos()
+	local player_pos = player:get_pos()
 	local positions = {
 		{x=0.5,y=0.5,z=0.5},
 		{x=-0.5,y=0.5,z=-0.5},
 	}
 	for _,pos in pairs(positions) do
 		pos = vector.round(vector.add(player_pos, pos))
-		local node = minetest.get_node(pos)
-		local nodedef = minetest.registered_nodes[node.name]
+		local node = core.get_node(pos)
+		local nodedef = core.registered_nodes[node.name]
 
 		if nodedef and nodedef.on_player_collision then
 			nodedef.on_player_collision(pos, player, gameid)
@@ -288,7 +288,7 @@ end
 
 -- Time counters
 local tmr_gamestep = 0
-minetest.register_globalstep(function(dtime)
+core.register_globalstep(function(dtime)
 	tmr_gamestep = tmr_gamestep + dtime;
 	if tmr_gamestep > 0.2 then
 		for id,player in pairs(pacmine.players) do
@@ -298,7 +298,7 @@ minetest.register_globalstep(function(dtime)
 	end
 end)
 
-minetest.register_on_leaveplayer(function(player)
+core.register_on_leaveplayer(function(player)
 	local name = player:get_player_name()
 	for id,game in pairs(pacmine.games) do
 		if game.player_name == name then
@@ -307,24 +307,24 @@ minetest.register_on_leaveplayer(function(player)
 	end
 end)
 
-minetest.register_on_shutdown(function()
-	minetest.log("action", "Server shuts down. Ending all pacmine games")
+core.register_on_shutdown(function()
+	core.log("action", "Server shuts down. Ending all pacmine games")
 	for id,game in pairs(pacmine.games) do
 		pacmine.game_end(id)
 	end
 end)
 
 -- Chatcommand to end the game for the current player
-minetest.register_chatcommand("pacmine_exit", {
+core.register_chatcommand("pacmine_exit", {
 	params = "",
 	description = "Loads and saves all rooms",
 	func = function(name, param)
 		local gamestate = pacmine.get_game_by_player(name)
 		if gamestate then
 			pacmine.game_end(gamestate.id)
-			minetest.chat_send_player(name, "You are no longer playing pacmine")
+			core.chat_send_player(name, "You are no longer playing pacmine")
 		else
-			minetest.chat_send_player(name, "You are not currently in a pacmine game")
+			core.chat_send_player(name, "You are not currently in a pacmine game")
 		end
 	end
 })

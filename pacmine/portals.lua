@@ -12,8 +12,8 @@ local cbox =  {
 	}
 
 --Portals
-minetest.register_alias("pacmine:portalr", "pacmine:portalr")
-minetest.register_node("pacmine:portalr", {
+core.register_alias("pacmine:portalr", "pacmine:portalr")
+core.register_node("pacmine:portalr", {
 	description = "Portalr ",
 	drawtype = "glasslike",
 	tiles = {"pacmine_portal.png"},
@@ -28,8 +28,8 @@ minetest.register_node("pacmine:portalr", {
 	selection_box = sbox,
 
 })
-minetest.register_alias("pacmine:portall", "pacmine:portall")
-minetest.register_node("pacmine:portall", {
+core.register_alias("pacmine:portall", "pacmine:portall")
+core.register_node("pacmine:portall", {
 	description = "Portall ",
 	drawtype = "glasslike",
 	tiles = {"pacmine_portal.png"},
@@ -45,30 +45,30 @@ minetest.register_node("pacmine:portall", {
 
 })
 
-minetest.register_abm({
+core.register_abm({
 	nodenames = {"pacmine:portall"},
 	interval = 0.5,
 	chance = 1,
 	action = function(pos, node, active_object_count, active_object_count_wider)
-		local objs = minetest.env:get_objects_inside_radius(pos, 1)
+		local objs = core.get_objects_inside_radius(pos, 1)
 		for k, player in pairs(objs) do
 			if player:get_player_name() then
 
-				player:setpos({x=pos.x-23,y=pos.y+0.5,z=pos.z})
+				player:set_pos({x=pos.x-23,y=pos.y+0.5,z=pos.z})
 			end
 		end
 	end
 })
-minetest.register_abm({
+core.register_abm({
 	nodenames = {"pacmine:portalr"},
 	interval = 0.5,
 	chance = 1,
 	action = function(pos, node, active_object_count, active_object_count_wider)
-		local objs = minetest.env:get_objects_inside_radius(pos, 1)
+		local objs = core.get_objects_inside_radius(pos, 1)
 		for k, player in pairs(objs) do
 			if player:get_player_name() then
 
-				player:setpos({x=pos.x+23,y=pos.y+0.5,z=pos.z})
+				player:set_pos({x=pos.x+23,y=pos.y+0.5,z=pos.z})
 			end
 		end
 	end

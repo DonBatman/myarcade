@@ -2,18 +2,18 @@
 -- This variable will be exported to other mods when they "depend" on this mod
 pacmine = {}
 
-dofile(minetest.get_modpath("pacmine").."/fruit.lua")
-dofile(minetest.get_modpath("pacmine").."/ghost.lua")
-dofile(minetest.get_modpath("pacmine").."/blocks.lua")
-dofile(minetest.get_modpath("pacmine").."/portals.lua")
-dofile(minetest.get_modpath("pacmine").."/gamestate.lua")
-dofile(minetest.get_modpath("pacmine").."/hud.lua")
---dofile(minetest.get_modpath("pacmine").."/aliases.lua")
+dofile(core.get_modpath("pacmine").."/fruit.lua")
+dofile(core.get_modpath("pacmine").."/ghost.lua")
+dofile(core.get_modpath("pacmine").."/blocks.lua")
+dofile(core.get_modpath("pacmine").."/portals.lua")
+dofile(core.get_modpath("pacmine").."/gamestate.lua")
+dofile(core.get_modpath("pacmine").."/hud.lua")
+--dofile(core.get_modpath("pacmine").."/aliases.lua")
 
 
 
 --Yellow Pellets
-minetest.register_node("pacmine:pellet_1", {
+core.register_node("pacmine:pellet_1", {
 	description = "Pellet 1",
 	tiles = {"wool_yellow.png"},
 	drawtype = "nodebox",
@@ -36,13 +36,13 @@ minetest.register_node("pacmine:pellet_1", {
 		}
 	},
 	on_player_collision = function(pos, player, gameid)
-		minetest.remove_node(pos)
+		core.remove_node(pos)
 		pacmine.on_player_got_pellet(player)
 	end
 })
 
 --Power Pellets. Need to make these do something
-minetest.register_node("pacmine:pellet_2", {
+core.register_node("pacmine:pellet_2", {
 	description = "Pellet 2",
 	tiles = {{name="pacmine_powerpellet.png", animation={type="vertical_frames",aspect_w=16, aspect_h=16, length=0.8}},},
 	drawtype = "nodebox",
@@ -73,13 +73,13 @@ minetest.register_node("pacmine:pellet_2", {
 		}
 	},
 	on_player_collision = function(pos, player, gameid)
-		minetest.remove_node(pos)
+		core.remove_node(pos)
 		pacmine.on_player_got_power_pellet(player)
 	end
 })
 
 --The placer block for pacmine
-minetest.register_node("pacmine:classic_board",{
+core.register_node("pacmine:classic_board",{
 	description = "Pacman",
 	inventory_image = "pacmine_1.png",
 	tiles = {
@@ -97,21 +97,21 @@ minetest.register_node("pacmine:classic_board",{
 	groups = {cracky = 1},
 	on_rightclick = function(pos, node, player, itemstack, pointed_thing)
 		pacmine.game_start(pos, player, {
-			schematic = minetest.get_modpath("pacmine").."/schems/pacmine.mts",
+			schematic = core.get_modpath("pacmine").."/schems/pacmine.mts",
 			scorename = "pacmine:classic_board",
 		})
 	end,
 	after_place_node = function(pos, placer, itemstack, pointed_thing)
-		if placer and minetest.check_player_privs(placer:get_player_name(), {myarcade = true}) then
+		if placer and core.check_player_privs(placer:get_player_name(), {myarcade = true}) then
 		else
-			minetest.remove_node(pos)
+			core.remove_node(pos)
 			return true
 		end
 	end,
 })
 
 --The placer block for pacmine mini
-minetest.register_node("pacmine:mini_board",{
+core.register_node("pacmine:mini_board",{
 	description = "Pacman Mini",
 	inventory_image = "pacmine_1.png^pacmine_mini.png",
 	tiles = {
@@ -129,7 +129,7 @@ minetest.register_node("pacmine:mini_board",{
 	groups = {cracky = 1},
 	on_rightclick = function(pos, node, player, itemstack, pointed_thing)
 		pacmine.game_start(pos, player, {
-			schematic =  minetest.get_modpath("pacmine").."/schems/pacmini.mts",
+			schematic =  core.get_modpath("pacmine").."/schems/pacmini.mts",
 			player_start = {x=13,y=0.5,z=2},
 			ghost_start = {x=13,y=0.5,z=10},
 			ghost_amount = 2,
@@ -138,16 +138,16 @@ minetest.register_node("pacmine:mini_board",{
 			scorename = "pacmine:mini_board",})
 	end,
 	after_place_node = function(pos, placer, itemstack, pointed_thing)
-		if placer and minetest.check_player_privs(placer:get_player_name(), {myarcade = true}) then
+		if placer and core.check_player_privs(placer:get_player_name(), {myarcade = true}) then
 		else
-			minetest.remove_node(pos)
+			core.remove_node(pos)
 			return true
 		end
 	end,
 })
 
-minetest.register_alias("pacmine:block", "pacmine:mini_board")
-minetest.register_alias("pacmine:block2", "pacmine:normal_board")
+core.register_alias("pacmine:block", "pacmine:mini_board")
+core.register_alias("pacmine:block2", "pacmine:normal_board")
 
 -- Register with the myhighscore mod
 myhighscore.register_game("pacmine:classic_board", {

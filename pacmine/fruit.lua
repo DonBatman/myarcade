@@ -18,7 +18,7 @@ for i in ipairs (pelletitems) do
 	local desc = pelletitems[i][2]
 	local points = pelletitems[i][3]
 
-minetest.register_node("pacmine:"..itm,{
+core.register_node("pacmine:"..itm,{
 	description = desc,
 	inventory_image = "pacmine_"..itm..".png",
 	tiles = {"pacmine_"..itm..".png",},
@@ -33,10 +33,10 @@ minetest.register_node("pacmine:"..itm,{
 	selection_box = sbox,
 	collision_box = cbox,
 	on_timer = function(pos, dtime)
-		minetest.remove_node(pos)
+		core.remove_node(pos)
 	end,
 	on_player_collision = function(pos, player, gameid)
-		minetest.remove_node(pos)
+		core.remove_node(pos)
 		pacmine.on_player_got_fruit(player, points)
 	end
 })
