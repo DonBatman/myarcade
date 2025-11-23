@@ -10,7 +10,7 @@ local pipe_end_box = {
 		fixed = {{-0.375, -0.5, -0.375, 0.375, 0.375, 0.375},
 				{-0.5, 0.3125, -0.5, 0.5, 0.5, 0.5},}}
 
-minetest.register_node("mario:pipe",{
+core.register_node("mario:pipe",{
 	description = "Pipe",
 	tiles = {
 			"mario_pipe_end_sm.png",
@@ -26,11 +26,11 @@ minetest.register_node("mario:pipe",{
 	pointable = false,
 	groups = {cracky = 1,not_in_creative_inventory=1},
 	node_box = pipe_box,
-	on_place = minetest.rotate_node,
+	on_place = core.rotate_node,
 	
 })
 
-minetest.register_node("mario:pipe_elbow",{
+core.register_node("mario:pipe_elbow",{
 	description = "Pipe Elbow",
 	tiles = {
 			"mario_pipe.png",
@@ -46,10 +46,10 @@ minetest.register_node("mario:pipe_elbow",{
 	pointable = false,
 	groups = {cracky = 1,not_in_creative_inventory=1},
 	node_box = pipe_elbow_box,
-	on_place = minetest.rotate_node,
+	on_place = core.rotate_node,
 })
 
-minetest.register_node("mario:pipe_end",{
+core.register_node("mario:pipe_end",{
 	description = "Pipe End",
 	tiles = {
 			"mario_pipe_end_sm.png",
@@ -65,6 +65,6 @@ minetest.register_node("mario:pipe_end",{
 	pointable = false,
 	groups = {cracky = 1,not_in_creative_inventory=1},
 	node_box = pipe_end_box,
-	on_place = minetest.rotate_node,
+	on_place = core.rotate_node,
 })
 

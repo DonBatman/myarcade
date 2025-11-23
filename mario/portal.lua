@@ -1,4 +1,4 @@
-minetest.register_node("mario:portal", {
+core.register_node("mario:portal", {
 	description = "Portal",
 	drawtype = "glasslike",
 	tiles = {"mario_glass.png"},
@@ -10,10 +10,10 @@ minetest.register_node("mario:portal", {
 	is_ground_content = false,
 	groups = {cracky = 1,not_in_creative_inventory=1},
 	on_turtle_collision = function(pos, obj, gameid)
-		obj:setpos({x=pos.x,y=pos.y+12,z=pos.z})
+		obj:set_pos({x=pos.x,y=pos.y+12,z=pos.z})
 	end
 })
-minetest.register_node("mario:portal_left", {
+core.register_node("mario:portal_left", {
 	description = "Portal Left",
 	drawtype = "glasslike",
 	tiles = {"mario_border.png"},
@@ -24,13 +24,13 @@ minetest.register_node("mario:portal_left", {
 	is_ground_content = false,
 	groups = {cracky = 1,not_in_creative_inventory=1},
 	on_player_collision = function(pos, player, gameid)
-		player:setpos(vector.add(pos,{x=31, y=0, z=0}))
+		player:set_pos(vector.add(pos,{x=31, y=0, z=0}))
 	end,
 	on_turtle_collision = function(pos, obj, gameid)
-		obj:setpos(vector.add(pos,{x=31, y=0, z=0}))
+		obj:set_pos(vector.add(pos,{x=31, y=0, z=0}))
 	end
 })
-minetest.register_node("mario:portal_right", {
+core.register_node("mario:portal_right", {
 	description = "Portal Right",
 	drawtype = "glasslike",
 	tiles = {"mario_border.png"},
@@ -41,9 +41,9 @@ minetest.register_node("mario:portal_right", {
 	is_ground_content = false,
 	groups = {cracky = 1,not_in_creative_inventory=1},
 	on_player_collision = function(pos, player, gameid)
-		player:setpos(vector.add(pos,{x=-31, y=0, z=0}))
+		player:set_pos(vector.add(pos,{x=-31, y=0, z=0}))
 	end,
 	on_turtle_collision = function(pos, obj, gameid)
-		obj:setpos(vector.add(pos,{x=31, y=0, z=0}))
+		obj:set_pos(vector.add(pos,{x=31, y=0, z=0}))
 	end
 })

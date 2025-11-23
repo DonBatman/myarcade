@@ -12,33 +12,35 @@ for i in ipairs(turtles) do
 	local itm = turtles[i][1]
 	local desc = turtles[i][2]
 
-	minetest.register_entity("mario:"..itm, {
-		hp_max = 1,
-		physical = true,
-		collide_with_objects = true,
-		visual = "sprite",
-		visual_size = {x = 1, y = 1},
-		textures = {
-			"mario_turtle.png",
-			"mario_turtle.png",
-			"mario_turtle.png",
-			"mario_turtle.png",
-			"mario_turtle.png",
-			"mario_turtle.png",
+	core.register_entity("mario:"..itm, {
+    	initial_properties = {
+			hp_max = 1,
+			physical = true,
+			collide_with_objects = true,
+			visual = "sprite",
+			visual_size = {x = 1, y = 1},
+			textures = {
+				"mario_turtle.png",
+				"mario_turtle.png",
+				"mario_turtle.png",
+				"mario_turtle.png",
+				"mario_turtle.png",
+				"mario_turtle.png",
+			
+			collisionbox = {-0.25, -0.25, -0.25, 0.25, 0.25, 0.25},
+			is_visible = true,
+			automatic_rotate = 1,
+			automatic_face_movement_dir = -90, -- set yaw direction in degrees, false to disable
+			makes_footstep_sound = false,
+			},
 		},
-
-		collisionbox = {-0.25, -0.25, -0.25, 0.25, 0.25, 0.25},
-		is_visible = true,
-		automatic_rotate = 1,
-		automatic_face_movement_dir = -90, -- set yaw direction in degrees, false to disable
-		makes_footstep_sound = false,
 		direction = {x=1, y=0, z=0},
 		acceleration = {x=0, y=-10, z=0},
 		speed = 3,
-
+		
 		update_velocity = function(self)
 			local velocity = vector.multiply(self.direction, self.speed)
-			self.object:setvelocity(velocity)
+			self.object:set_velocity(velocity)
 		end,
 
 		on_step = function(self, dtime)
@@ -50,7 +52,7 @@ for i in ipairs(turtles) do
 			-- Do we have game state? if not just die
 			local gamestate = mario.games[self.gameid]
 			if not gamestate then
-				minetest.log("action", "Removing turtle without game assigned")
+				core.log("action", "Removing turtle without game assigned")
 				self.object:remove()
 				return
 			end
@@ -59,7 +61,7 @@ for i in ipairs(turtles) do
 			-- if the reset time changed it's likely the game got resetted while the entity wasn't loaded
 			if self.last_reset then
 				if self.last_reset ~= gamestate.last_reset then
-					minetest.log("action", "Removing turtle remaining after reset ")
+					core.log("action", "Removing turtle remaining after reset ")
 					self.object:remove()
 				end
 			else
@@ -68,14 +70,14 @@ for i in ipairs(turtles) do
 
 			-- Make sure we have a targetted player
 			if not self.target then
-				self.target = minetest.get_player_by_name(gamestate.player_name)
+				self.target = core.get_player_by_name(gamestate.player_name)
 			end
 			local player = self.target
 
 			-- find distance to the player
-                        local spos = self.object:getpos()
+                        local spos = self.object:get_pos()
                         if not spos then return end
-			local dist = vector.distance(spos, player:getpos())
+			local dist = vector.distance(spos, player:get_pos())
 			if dist < 1 then
 				mario.on_player_death(self.gameid, player)
 			end
@@ -86,11 +88,11 @@ for i in ipairs(turtles) do
 			-- if our velocity is close to zero, we are in collision
 			if math.abs(velocity.x) < 0.25 then
 				-- Check if there's a portal or some other node
-				local pos = self.object:getpos()
+				local pos = self.object:get_pos()
 				pos.y = pos.y + 0.5
-				local node = minetest.get_node(pos)
-				if minetest.registered_nodes[node.name].on_turtle_collision then
-					minetest.registered_nodes[node.name].on_turtle_collision(pos, self.object, self.gameid)
+				local node = core.get_node(pos)
+				if core.registered_nodes[node.name].on_turtle_collision then
+					core.registered_nodes[node.name].on_turtle_collision(pos, self.object, self.gameid)
 				else
 					self.direction.x = -self.direction.x
 				end
@@ -119,15 +121,15 @@ for i in ipairs(turtles) do
 					-- Ghost catches the player!
 					gamestate.lives = gamestate.lives - 1
 					if gamestate.lives < 1 then
-						minetest.chat_send_player(gamestate.player_name,"Game Over")
+						core.chat_send_player(gamestate.player_name,"Game Over")
 						mario.game_end(self.gameid)
-						minetest.sound_play("mario_death", {pos = boardcenter,max_hear_distance = 20, object=player, loop=false})
+						core.sound_play("mario_death", {pos = boardcenter,max_hear_distance = 20, object=player, loop=false})
 
 					elseif gamestate.lives == 1 then
-						minetest.chat_send_player(gamestate.player_name,"This is your last life")
+						core.chat_send_player(gamestate.player_name,"This is your last life")
 						mario.game_reset(self.gameid, player)
 					else
-						minetest.chat_send_player(gamestate.player_name,"You have ".. gamestate.lives .." lives left")
+						core.chat_send_player(gamestate.player_name,"You have ".. gamestate.lives .." lives left")
 						mario.game_reset(self.gameid, player)
 					end
 				--end
@@ -160,7 +162,7 @@ for i in ipairs(turtles) do
 		-- This function should load the saved state of the entity from a string
 		on_activate = function(self, staticdata)
 			self:update_velocity()
-			self.object:setacceleration(self.acceleration)
+			self.object:set_acceleration(self.acceleration)
 			self.object:set_armor_groups({immortal=1})
 			if staticdata and staticdata ~= "" then
 				local data = string.split(staticdata, ";")

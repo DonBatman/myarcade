@@ -1,4 +1,4 @@
-minetest.register_node("mario:platform",{
+core.register_node("mario:platform",{
 	description = "Platform",
 	tiles = {
 			"mario_blue.png",
@@ -8,7 +8,7 @@ minetest.register_node("mario:platform",{
 	pointable = false,
 	groups = {cracky = 1,not_in_creative_inventory=1},
 })
-minetest.register_node("mario:grey",{
+core.register_node("mario:grey",{
 	description = "Grey",
 	tiles = {
 			"mario_grey.png",
@@ -19,7 +19,7 @@ minetest.register_node("mario:grey",{
 	pointable = false,
 	groups = {cracky = 1,not_in_creative_inventory=1},
 })
-minetest.register_node("mario:border",{
+core.register_node("mario:border",{
 	description = "Border",
 	tiles = {
 			"mario_border.png",
@@ -29,7 +29,7 @@ minetest.register_node("mario:border",{
 	pointable = false,
 	groups = {cracky = 1,not_in_creative_inventory=1},
 })
-minetest.register_node("mario:brick",{
+core.register_node("mario:brick",{
 	description = "Brick",
 	tiles = {
 			"mario_brick.png",
@@ -39,7 +39,7 @@ minetest.register_node("mario:brick",{
 	pointable = false,
 	groups = {cracky = 1,not_in_creative_inventory=1},
 })
-minetest.register_node("mario:glass", {
+core.register_node("mario:glass", {
 	description = "Glass",
 	tiles = {"mario_grey.png","mario_glass.png"},
 	drawtype = "glasslike_framed",
@@ -47,7 +47,7 @@ minetest.register_node("mario:glass", {
 	pointable = false,
 	groups = {cracky = 1,not_in_creative_inventory=1},
 })
-minetest.register_node("mario:coin", {
+core.register_node("mario:coin", {
 	description = "Coin",
 	tiles = {"mario_coin.png"},
 	drawtype = "plantlike",
@@ -56,10 +56,10 @@ minetest.register_node("mario:coin", {
 	pointable = false,
 	groups = {cracky = 1,not_in_creative_inventory=1},
 	on_destruct = function(pos)
-		minetest.sound_play("mario-coin", {pos = pos,max_hear_distance = 40,gain = 10.0,})
+		core.sound_play("mario-coin", {pos = pos,max_hear_distance = 40,gain = 10.0,})
 	end,
 	on_player_collision = function(pos, player, gameid)
-		minetest.remove_node(pos)
+		core.remove_node(pos)
 		mario.on_player_got_coin(player)
 	end
 })
@@ -78,7 +78,7 @@ local nbox = {
 		}
 	}
 
-minetest.register_node("mario:mushroom",{
+core.register_node("mario:mushroom",{
 	description = "Mushroom",
 	tiles = {
 			"mario_mushroom_top.png",
@@ -95,15 +95,15 @@ minetest.register_node("mario:mushroom",{
 	groups = {cracky = 1,not_in_creative_inventory=1},
 	node_box = nbox,
 	on_timer = function(pos, dtime)
-		minetest.remove_node(pos)
+		core.remove_node(pos)
 	end,
 	on_player_collision = function(pos, player, gameid)
-		minetest.remove_node(pos)
+		core.remove_node(pos)
 		mario.on_player_got_mushroom(player, 15)
 	end
 })
 
-minetest.register_node("mario:mushroom_green",{
+core.register_node("mario:mushroom_green",{
 	description = "Green Mushroom",
 	tiles = {
 			"mario_mushroom_top_g.png",
@@ -120,11 +120,11 @@ minetest.register_node("mario:mushroom_green",{
 	groups = {cracky = 1,not_in_creative_inventory=1},
 	node_box = nbox,
 	on_timer = function(pos, dtime)
-		minetest.remove_node(pos)
+		core.remove_node(pos)
 	end,
 	on_player_collision = function(pos, player, gameid)
-		minetest.remove_node(pos)
-		minetest.sound_play("mario-1-up", {pos = pos,max_hear_distance = 6,gain = 10.0,})
+		core.remove_node(pos)
+		core.sound_play("mario-1-up", {pos = pos,max_hear_distance = 6,gain = 10.0,})
 		local gamestate = mario.games[gameid]
 		if gamestate then
 			gamestate.lives = gamestate.lives + 1

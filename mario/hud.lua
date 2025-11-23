@@ -4,7 +4,7 @@ local hud_table = {}
 
 function mario.update_hud(id, player)
 	local game = mario.games[id]
-	player = player or minetest.get_player_by_name(game.player_name)
+	player = player or core.get_player_by_name(game.player_name)
 	if not player then
 		return
 	elseif not game then
@@ -20,7 +20,7 @@ function mario.update_hud(id, player)
 	local hud = hud_table[game.player_name]
 	if not hud then
 		hud = player:hud_add({
-			hud_elem_type = "text",
+			type = "text",
 			position = {x = 0, y = 1},
 			offset = {x=100, y = -100},
 			scale = {x = 100, y = 100},
